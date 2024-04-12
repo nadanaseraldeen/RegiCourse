@@ -1,0 +1,43 @@
+body {
+    background-color: #080710;
+    margin: 0;
+
+}
+
+#navbarNav ul {
+    margin-left: auto;
+}
+
+.navbar {
+    background-color: #080710;
+}
+
+.name img{
+width: 100%;
+height: 60px;
+}
+
+.custom-nav .nav-link {
+    color: white !important;
+    font-size: 18px;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.custom-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    margin-left: 7px;
+    margin-bottom: 5px;
+    background: rgb(226, 43, 119);
+    transition: width 0.5s ease-in-out;
+}
+
+.custom-nav .nav-link:hover::before {
+    width: 40%;
+}
