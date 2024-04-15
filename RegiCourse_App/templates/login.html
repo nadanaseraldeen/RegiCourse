@@ -1,47 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RegiCourse Login</title>
-     {% load static %}
-    <link rel="stylesheet" href= "{% static 'login.css'%}">
-  </head>
-
-  <body>
-    <div class="container">
-      <img src="{% static 'logo.png'%}" alt="Logo" />
-
-      <div class="List">
-        <p class="Link active-link" id="linkLogin" onclick="openTab('Login')">
-          Login
-        </p>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+<div class="container" style="height: 475px;">
+    <img src="{% static 'logo.png' %}" alt="Logo">
+    <div class="List">
+        <p class="Link active-link" id="linkLogin" onclick="openTab('Login')">Login</p>
         <p class="Link" id="linkSignup" onclick="openTab('Signup')">Signup</p>
-      </div>
+    </div>
 
-      <form id="loginForm" class="loginForm active-form">
-        <input type="email" placeholder="Email" required/>
-        <br />
-        <input type="password" placeholder="Password" required />
-        <br />
+    <form id="loginForm" class="loginForm active-form" method="post" action="{% url 'authenticate' %}">
+        {% csrf_token %}
+
+
+        <input type="email" placeholder="Email" name="login-email" required/><br>
+
+        <input type="password" placeholder="Password" name="login-password" required/><br>
+
+           {% if login_errors %}
+        {% for error in login_errors %}
+            <div class="error" style="color:rgb(226, 43, 119); font-size:14px;position: relative; left:90px;top:7px;">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
         <button type="submit">Login</button>
         <p class="p1">
-          Don't have an account?<span
-            onclick="openTab('Signup')"
-            >Signup</span
-          >
+            Don't have an account?<span onclick="openTab('Signup')">Signup</span>
         </p>
-      </form>
+    </form>
 
-      <form id="signupForm" class="signupForm">
-        <input type="text" placeholder="Name" required/>
+<form id="signupForm" class="signupForm" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+
+        <input type="text" placeholder="Name" name="name" required/>
         <br />
-        <input type="email" placeholder="Email" required/>
+        <input type="email" placeholder="Email" name="email" required/>
         <br />
-        <input type="password" placeholder="Password" required />
+        <input type="password" placeholder="Password" name="password" required />
         <br />
-        <input type="password" placeholder="Confirm Password" required />
+        <input type="password" placeholder="Confirm Password" name="confirmPassword" required />
         <br />
+     {% if signup_errors %}
+        {% for error in signup_errors %}
+            <div class="error" style="color:rgb(226, 43, 119); font-size:14px;position: relative; left:90px;top:7px;">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+
         <button type="submit">Signup</button>
         <p class="p2">
           Already have an account?<span
@@ -51,7 +60,7 @@
           >
         </p>
       </form>
-    </div>
-<script src="{% static 'login.js'%}"></script>
-  </body>
+</div>
+<script src="{% static 'login.js' %}"></script>
+</body>
 </html>
