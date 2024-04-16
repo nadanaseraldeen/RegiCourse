@@ -6,7 +6,7 @@ class Students(models.Model):
     student_Id = models.AutoField(primary_key=True)
     student_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=255)
 
 
 class CourseSchedules(models.Model):

@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
 from RegiCourse_App.models import Students
+from django.contrib.auth import logout
+
 
 
 def master(request):
@@ -30,22 +33,26 @@ def signup(request):
         password = request.POST.get('password')
         confirmPassword = request.POST.get('confirmPassword')
 
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long')
+            return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
+        if not any(char.isalpha() for char in password):
+            messages.error(request, 'Password must contain at least one letter')
+            return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
+
         if password != confirmPassword:
              messages.error(request, 'Passwords do not match')
              return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
 
 
-        if User.objects.filter(email=email).exists():
+        if Students.objects.filter(email=email).exists():
 
            messages.error(request, 'Email is already in use')
            return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
 
-        student = User.objects.create_user(email, email, password)
-        student.name = name
+        hashed_password = make_password(password)
+        student = Students(student_name=name, email=email, password=hashed_password)
         student.save()
-
-        students = Students(student_name=name, email=email, password=password)
-        students.save()
 
         return redirect('home')
 
@@ -63,9 +70,9 @@ def authenticate_user(request):
         password = request.POST.get('login-password')
 
         try:
-            user = Students.objects.get(email=email)
+            student = Students.objects.get(email=email)
 
-            if user.password == password:
+            if check_password(password, student.password):
                 return redirect('home')
             else:
                 messages.error(request, 'The email or password is incorrect')
