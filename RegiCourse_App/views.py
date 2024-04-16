@@ -83,3 +83,7 @@ def authenticate_user(request):
             return render(request, 'login.html', {'login_errors': messages.get_messages(request)})
 
     return redirect('login')
+
+
+def courses(request):
+    return render(request, 'courses.html')
