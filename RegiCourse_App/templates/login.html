@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RegiCourse Login</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css'%}">
+
+
 </head>
 <body>
 <div class="container" style="height: 475px;">
-    <img src="{% static 'logo.png' %}" alt="Logo">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
     <div class="List">
         <p class="Link active-link" id="linkLogin" onclick="openTab('Login')">Login</p>
         <p class="Link" id="linkSignup" onclick="openTab('Signup')">Signup</p>
@@ -61,6 +63,6 @@
         </p>
       </form>
 </div>
-<script src="{% static 'login.js' %}"></script>
+        <script src="{% static 'js/login.js'%}"></script>
 </body>
 </html>
