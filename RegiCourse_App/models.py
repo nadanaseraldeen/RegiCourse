@@ -34,6 +34,10 @@ class Courses(models.Model):
     def __str__(self):
         return f"{self.course_name}"
 
+    def availableSpots(self):
+        registered_count = self.studentsreg_set.count()
+        return self.capacity - registered_count
+
 
 class StudentsReg(models.Model):
 

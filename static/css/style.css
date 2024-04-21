@@ -150,4 +150,18 @@ html, body {
     min-height: 100%;
 }
 
+.noCourses p{
+    color: rgba(255, 255, 255, 0.8);
+    margin:auto;
+    margin-top:-25px;
+}
+.noCourses a{
+    color: rgb(226, 43, 119);
+    cursor:pointer;
+    font-size:12px;
+    text-decoration: none;
+}
 
+.noCourses a:hover {
+    text-decoration: underline;
+}

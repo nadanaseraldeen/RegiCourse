@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
-from RegiCourse_App.models import Students
+from RegiCourse_App.models import Students, Courses
 from django.contrib.auth import logout
 
 
@@ -83,6 +83,21 @@ def authenticate_user(request):
 
     return redirect('login')
 
+def courses_info(request):
+    return render(request, 'courses.html')
 
 def courses(request):
-    return render(request, 'courses.html')
+    query = request.GET.get('q')
+    courses = Courses.objects.all()
+
+    if query:
+        courses = Courses.objects.filter(course_name__icontains=query) | \
+                  Courses.objects.filter(course_code__icontains=query) | \
+                  Courses.objects.filter(instructor_name__icontains=query)
+
+    else:
+        for course in courses:
+           course.available_spots = course.capacity - course.studentsreg_set.count()
+        courses = Courses.objects.all()
+
+    return render(request, 'courses.html', {'courses': courses})
