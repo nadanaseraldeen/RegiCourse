@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -5,8 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
 from RegiCourse_App.models import Students, Courses
-from django.contrib.auth import logout
-
+from django.contrib.auth import logout, authenticate
 
 
 def master(request):
@@ -14,9 +14,9 @@ def master(request):
     return render(request,'master.html')
 
 
-def home(request):
 
-    return render(request,'home.html')
+def home(request):
+    return render(request, 'home.html')
 
 
 def logout(request):
@@ -63,7 +63,6 @@ def login(request):
 
 
 def authenticate_user(request):
-
     if request.method == 'POST':
         email = request.POST.get('login-email')
         password = request.POST.get('login-password')
@@ -83,21 +82,22 @@ def authenticate_user(request):
 
     return redirect('login')
 
+
 def courses_info(request):
     return render(request, 'courses.html')
 
+
 def courses(request):
-    query = request.GET.get('q')
+    querySearch = request.GET.get('searchCou')
     courses = Courses.objects.all()
 
-    if query:
-        courses = Courses.objects.filter(course_name__icontains=query) | \
-                  Courses.objects.filter(course_code__icontains=query) | \
-                  Courses.objects.filter(instructor_name__icontains=query)
+    if querySearch:
+        courses = Courses.objects.filter(course_name__icontains=querySearch) | \
+                  Courses.objects.filter(course_code__icontains=querySearch) | \
+                  Courses.objects.filter(instructor_name__icontains=querySearch)
 
     else:
         for course in courses:
            course.available_spots = course.capacity - course.studentsreg_set.count()
-        courses = Courses.objects.all()
 
     return render(request, 'courses.html', {'courses': courses})

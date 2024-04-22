@@ -9,12 +9,18 @@
 <div class="row about">
   <div class="col-md-12 text-center">
     <h1 class="title mt-5">Regi<span>Course</span></h1>
-    <p class="summary">Welcome to RegiCourse, your gateway to IT education and programming mastery. Explore a variety of courses covering the basics of IT and programming, designed to upgrade your skills and knowledge. Whether you're a beginner or looking to enhance your expertise, RegiCourse is your choice for success.</p>
+{% if student_name %}
+      <p class="summary">{{ student_name }}, Welcome to RegiCourse, your gateway to IT education and programming mastery. Explore a variety of courses covering the basics of IT and programming, designed to upgrade your skills and knowledge. Whether you're a beginner or looking to enhance your expertise, RegiCourse is your choice for success.</p>
+    {% else %}
+      <p class="summary">Welcome to RegiCourse, your gateway to IT education and programming mastery. Explore a variety of courses covering the basics of IT and programming, designed to upgrade your skills and knowledge. Whether you're a beginner or looking to enhance your expertise, RegiCourse is your choice for success.</p>
+    {% endif %}
+
+
 
       <form class=" d-flex search" role="search" method="GET" action="{% url 'courses' %}">
         <div class="input-group">
             <button class="btn icon" type="button" id="searchButton"><i class="bi bi-search"></i></button>
-            <input class="form-control me-2 search-input" type="search" placeholder="Search..." aria-label="Search" name="q">
+            <input class="form-control me-2 search-input" type="search" placeholder="Search..." aria-label="Search" name="searchCou">
         </div>
       </form>
 

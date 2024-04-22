@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-{% load static %}
+    {% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,7 +26,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'courses_info' %}">Courses</a>
+              <a class="nav-link" href="{% url 'courses' %}">Courses</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#schedule">Schedule</a>
@@ -45,10 +46,6 @@
     {% block content %}
     {% endblock %}
     </div>
-
-
-
-
 
     <footer class="footer">
       <div class="container">
