@@ -165,3 +165,49 @@ html, body {
 .noCourses a:hover {
     text-decoration: underline;
 }
+
+.studentName::first-letter {
+    text-transform: capitalize;
+}
+
+.studentName {
+    color: rgb(226, 43, 119);
+}
+
+.card-back{
+    background-color: #1a1a1d;
+    border-radius: 10px;
+ color: rgba(255, 255, 255, 0.9);
+     font-family: 'Roboto', sans-serif;
+    font-size:13px;
+
+}
+
+.card-title{
+    color: rgb(226, 43, 119);
+    font-family: 'Times New Roman', Times, serif;
+
+
+}
+
+.card-subtitle{
+    font-family: 'Times New Roman', Times, serif;
+        color:  rgba(255, 255, 255, 0.6);
+}
+.addSchedule{
+    font-size: 13px;
+    font-weight:450;
+    color:rgba(255, 255, 255, 0.8);
+    font-family: 'Roboto', sans-serif;
+    background-color: rgb(226, 43, 119);
+    position: relative;
+    height: 30px;
+    margin-top: 5px;
+    transition: transform 1s ease, box-shadow 0.5s ease;
+    border: rgb(226, 43, 119);
+    border-radius: 5px;
+}
+.addSchedule:hover{
+   transform: scale(1.1);
+    box-shadow: 0 0 8px rgb(226, 43, 119);
+    }
