@@ -39,10 +39,15 @@
 
             <div class="card-footer">
 
-            <form>
-                {% csrf_token %}
-                <button class="addSchedule" type="submit">Add to Schedule</button>
-            </form>
+                <form action="{% url 'addToSchedule' %}" method="POST">
+    {% csrf_token %}
+                     <input type="hidden" name="student_email">
+    <input type="hidden" name="password">
+    <input type="hidden" name="course_code" value="{{ course.course_code }}">
+    <button class="addSchedule" type="submit">Add to Schedule</button>
+</form>
+
+
             </div>
         </div>
     </div>

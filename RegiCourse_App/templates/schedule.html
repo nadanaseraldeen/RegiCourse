@@ -1,0 +1,28 @@
+{% extends 'master.html' %}
+
+{% block title %}
+  Schedule Page
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-top:100px;"> hello</h1>
+<h1 class="schedule-heading">Your Schedule</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
+    {% for reg in scheduled_courses %}
+    <div class="col">
+        <div class="card card-back h-100">
+            <div class="card-body">
+                <h5 class="card-title"><strong>{{ reg.course.course_name }}</strong></h5>
+                <h6 class="card-subtitle mb-3">{{ reg.course.course_code }}</h6>
+                <!-- Add more course details as needed -->
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-md-12 noCourses">
+        <p>No courses scheduled yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
