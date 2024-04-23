@@ -47,4 +47,9 @@ class StudentsReg(models.Model):
     studentReg_Id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.student}"
+
 

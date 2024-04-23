@@ -16,7 +16,8 @@ def master(request):
 
 
 def home(request):
-    return render(request, 'home.html')
+    student_name = request.session.get('student_name')
+    return render(request, 'home.html', {'student_name': student_name})
 
 
 def logout(request):
@@ -51,8 +52,8 @@ def signup(request):
 
         request.session['student_id'] = student.student_Id
 
+        request.session['student_name'] = student.student_name
         return redirect('home')
-
     return render(request, 'login.html')
 
 
@@ -70,7 +71,9 @@ def authenticate_user(request):
 
             if check_password(password, student.password):
                 request.session['student_id'] = student.student_Id
+                request.session['student_name'] = student.student_name
                 return redirect('home')
+                #return redirect('home')
             else:
                 messages.error(request, 'Invalid email or password')
                 return render(request, 'login.html', {'login_errors': messages.get_messages(request)})
@@ -101,79 +104,65 @@ def courses(request):
     return render(request, 'courses.html', {'courses': courses})
 
 
-def schedule(request):
-    if request.user.is_authenticated:
-        user_id = request.user.id  # Get the user's ID
-        scheduled_courses = StudentsReg.objects.filter(student_Id=user_id)
-        return render(request, 'schedule.html', {'scheduled_courses': scheduled_courses})
-    else:
-        # Handle the case where the user is not authenticated
-        return render(request, 'schedule.html', {'scheduled_courses': []})
-
 
 def addToSchedule(request):
     if request.method == 'POST':
-        # Get the student ID from the session
         student_id = request.session.get('student_id')
+        course_code = request.POST.get('course_code')
 
         if student_id is None:
             return HttpResponse("User not logged in")
 
-        # Retrieve the student object based on the ID
         student = Students.objects.get(student_Id=student_id)
 
-        # Assuming the course_code is passed as part of the request POST data
-        course_code = request.POST.get('course_code')
-
-        # Query the Courses model based on the course_code
         try:
             course = Courses.objects.get(course_code=course_code)
         except Courses.DoesNotExist:
-            return HttpResponse("Course with this code does not exist")
+            return HttpResponse("Course does not exist")
 
-        # Check if the course is already in the student's schedule
-        if StudentsReg.objects.filter(student=student, course__schedule=course.schedule).exists():
-            return HttpResponse("Student is already registered for a course at this time")
+        if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
+            return HttpResponse("Student is already registered for this course")
 
-        # Check if the course has any prerequisites
         if course.prerequisites:
-            # Check if the student has completed the prerequisites
-            if not meets_prerequisites(student, course):
+            if not prerequisitesCompleted(student, course):
                 return HttpResponse("Student has not completed the prerequisites for this course")
 
-        # Check if the course has available spots
         if course.availableSpots() <= 0:
             return HttpResponse("No available spots for this course")
 
-        # Check for course clashes with other registered courses
         registered_courses = StudentsReg.objects.filter(student=student)
         for registered_course in registered_courses:
             if registered_course.course.schedule == course.schedule:
                 return HttpResponse("Course schedule clashes with another registered course")
 
-        # Create a new instance of StudentsReg
         registration = StudentsReg(student=student, course=course)
-        # Save the registration to the database
         registration.save()
 
         return redirect('schedule')
     else:
-        return HttpResponse("Invalid request method")
+        return HttpResponse("Invalid add the course")
 
-def meets_prerequisites(request, student, course):
-    # Retrieve the prerequisite course code
-    prerequisite_course_code = course.prerequisites
+def prerequisitesCompleted(student, course):
 
-    # If the course has no prerequisite, the student meets it by default
-    if not prerequisite_course_code:
+    prerequisiteCode = course.prerequisites
+
+    if not prerequisiteCode:
         return True
 
-    # Retrieve the prerequisite course object
     try:
-        prerequisite_course = Courses.objects.get(course_code=prerequisite_course_code)
+        prerequisiteCourse = Courses.objects.get(course_code=prerequisiteCode)
     except Courses.DoesNotExist:
-        # If the prerequisite course doesn't exist, the student doesn't meet the prerequisite
         return False
 
-    # Check if the student is registered for the prerequisite course
-    return StudentsReg.objects.filter(student=student, course=prerequisite_course).exists()
+    return StudentsReg.objects.filter(student=student, course=prerequisiteCourse).exists()
+
+
+def schedule(request):
+    student_id = request.session.get('student_id')
+
+    if student_id is None:
+        return HttpResponse("User not logged in")
+
+    registered_courses = StudentsReg.objects.filter(student__student_Id=student_id).select_related('course')
+
+    return render(request, 'schedule.html', {'registered_courses': registered_courses})

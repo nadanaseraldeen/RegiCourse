@@ -211,3 +211,12 @@ html, body {
    transform: scale(1.1);
     box-shadow: 0 0 8px rgb(226, 43, 119);
     }
+
+.student-name span {
+    text-transform: capitalize !important;
+    color: rgb(226, 43, 119);
+        font-size:15px;
+
+}
+
+
