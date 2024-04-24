@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content%}
-
+<!--
 <h1 style="margin-top:100px;">Registered Courses</h1>
 
 <div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
@@ -37,5 +37,66 @@
         <p>No registered courses found.</p>
     </div>
     {% endfor %}
+</div>
+-->
+
+<h1 style="margin-top:100px;">Registered Courses</h1>
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                    <th>Code</th>
+                    <th>Course</th>
+                    <th>Room</th>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Instructor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registration in registered_courses %}
+            <tr>
+                <td>{{ registration.course.course_code }}</td>
+                <td>{{ registration.course.course_name }}</td>
+                <td>{{ registration.course.schedule.roomNo }}</td>
+
+                <td>
+                    {% if 'Sun' in registration.course.schedule.days %}
+                        {{ registration.course.schedule.startTime|time:"H:i" }} - {{ registration.course.schedule.endTime|time:"H:i" }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'Mon' in registration.course.schedule.days %}
+                        {{ registration.course.schedule.startTime|time:"H:i" }} - {{ registration.course.schedule.endTime|time:"H:i" }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'Tue' in registration.course.schedule.days %}
+                        {{ registration.course.schedule.startTime|time:"H:i" }} - {{ registration.course.schedule.endTime|time:"H:i" }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'Wed' in registration.course.schedule.days %}
+                        {{ registration.course.schedule.startTime|time:"H:i" }} - {{ registration.course.schedule.endTime|time:"H:i" }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'Thu' in registration.course.schedule.days %}
+                        {{ registration.course.schedule.startTime|time:"H:i" }} - {{ registration.course.schedule.endTime|time:"H:i" }}
+                    {% endif %}
+                </td>
+                <td>{{ registration.course.instructor_name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">No registered courses found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

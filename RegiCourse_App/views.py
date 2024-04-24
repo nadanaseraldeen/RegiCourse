@@ -123,17 +123,18 @@ def addToSchedule(request):
         if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
             return HttpResponse("Student is already registered for this course")
 
-        if course.prerequisites:
-            if not prerequisitesCompleted(student, course):
-                return HttpResponse("Student has not completed the prerequisites for this course")
 
         if course.availableSpots() <= 0:
             return HttpResponse("No available spots for this course")
 
-        registered_courses = StudentsReg.objects.filter(student=student)
+        registered_courses = StudentsReg.objects.filter(student=student, completed=False )
         for registered_course in registered_courses:
             if registered_course.course.schedule == course.schedule:
                 return HttpResponse("Course schedule clashes with another registered course")
+
+        if course.prerequisites:
+            if not prerequisitesCompleted(student, course):
+                return HttpResponse("Prerequisite course is not completed")
 
         registration = StudentsReg(student=student, course=course)
         registration.save()
@@ -143,19 +144,17 @@ def addToSchedule(request):
         return HttpResponse("Invalid add the course")
 
 def prerequisitesCompleted(student, course):
+    prereq_course = course.prerequisites
 
-    prerequisiteCode = course.prerequisites
+    prereq_registration = StudentsReg.objects.filter(student=student, course=prereq_course).first()
 
-    if not prerequisiteCode:
-        return True
-
-    try:
-        prerequisiteCourse = Courses.objects.get(course_code=prerequisiteCode)
-    except Courses.DoesNotExist:
+    if not prereq_registration or not prereq_registration.completed:
         return False
 
-    return StudentsReg.objects.filter(student=student, course=prerequisiteCourse).exists()
+    return True
 
+     #prereq_course = course.prerequisites
+     #return StudentsReg.objects.filter(student=student, course=prereq_course).exists()
 
 def schedule(request):
     student_id = request.session.get('student_id')
@@ -163,6 +162,6 @@ def schedule(request):
     if student_id is None:
         return HttpResponse("User not logged in")
 
-    registered_courses = StudentsReg.objects.filter(student__student_Id=student_id).select_related('course')
+    registered_courses = StudentsReg.objects.filter(student__student_Id=student_id, completed=False).select_related('course')
 
     return render(request, 'schedule.html', {'registered_courses': registered_courses})
