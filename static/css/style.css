@@ -187,7 +187,6 @@ html, body {
     color: rgb(226, 43, 119);
     font-family: 'Times New Roman', Times, serif;
 
-
 }
 
 .card-subtitle{
@@ -219,4 +218,99 @@ html, body {
 
 }
 
+.mySchedule{
+    font-family: 'Times New Roman', Times, serif;
+    margin-top:130px;
+     color: rgba(255, 255, 255, 0.9);
+    text-align:center;
+}
+
+.mySchedule span{
+    color: rgb(226, 43, 119);
+}
+
+.nameSch{
+    font-family: 'Times New Roman', Times, serif;
+        color: rgb(226, 43, 119);
+        margin-left:15px;
+font-size:19px;
+
+}
+
+.nameSch span{
+    text-transform: capitalize !important;
+        color: rgba(255, 255, 255, 0.9);
+}
+
+.currentSch{
+     color: rgba(255, 255, 255, 0.9);
+     font-family: 'Roboto', sans-serif;
+     font-size:14px;
+}
+
+
+.table-bordered th,.table-bordered td{
+    background-color: #1a1a1d;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 9px;
+}
+
+   .tableHeader th {
+    color: rgba(255, 255, 255, 0.9);
+        font-weight: bold;
+        text-align: center;
+         font-size: 16px;
+    padding: 13px 7px;
+    }
+.table-bordered {
+        border-color: #080710;;
+ }
+
+ .findCou{
+ text-decoration: none;
+ color: rgb(226, 43, 119);
+ font-size:13px;
+ }
+
+.findCou:hover{
+ text-decoration: underline;
+
+ }
+
+.scheduleMessage i{
+ color: rgb(226, 43, 119);
+ margin-right:5px;
+}
+
+
+.scheduleMess {
+    position: absolute;
+    top:330px;
+    z-index: 9999;
+     background-color: #080710;
+    color: rgba(255, 255, 255, 0.9);
+
+}
+
+.container {
+    position: relative;
+}
+
+.closeButton i{
+ color: rgb(226, 43, 119);
+ font-size: 40px;
+}
+
+.closeButton {
+    border: none;
+    position: absolute;
+     height:0px;
+     width:0px;
+     rgba(255, 255, 255, 0.9);
+     top:-5px;
+     right:30px;
+     background-color: #1a1a1d;
+
+
+}
 

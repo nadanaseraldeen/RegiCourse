@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -104,44 +103,38 @@ def courses(request):
     return render(request, 'courses.html', {'courses': courses})
 
 
-
 def addToSchedule(request):
     if request.method == 'POST':
         student_id = request.session.get('student_id')
         course_code = request.POST.get('course_code')
 
         if student_id is None:
-            return HttpResponse("User not logged in")
+            schedule_message = "User not logged in"
+        else:
+            student = Students.objects.get(student_Id=student_id)
+            try:
+                course = Courses.objects.get(course_code=course_code)
+                if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
+                    schedule_message = "Student is already registered for this course"
+                elif course.availableSpots() <= 0:
+                    schedule_message = "No available spots for this course"
+                elif StudentsReg.objects.filter(student=student, completed=False,
+                                                course__schedule=course.schedule).exists():
+                    schedule_message = "Course schedule clashes with another registered course"
+                elif course.prerequisites and not prerequisitesCompleted(student, course):
+                    schedule_message = "Prerequisite course is not completed"
+                else:
+                    registration = StudentsReg(student=student, course=course)
+                    registration.save()
+                    return redirect('schedule')
+            except Courses.DoesNotExist:
+                schedule_message = "Course does not exist"
 
-        student = Students.objects.get(student_Id=student_id)
-
-        try:
-            course = Courses.objects.get(course_code=course_code)
-        except Courses.DoesNotExist:
-            return HttpResponse("Course does not exist")
-
-        if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
-            return HttpResponse("Student is already registered for this course")
-
-
-        if course.availableSpots() <= 0:
-            return HttpResponse("No available spots for this course")
-
-        registered_courses = StudentsReg.objects.filter(student=student, completed=False )
-        for registered_course in registered_courses:
-            if registered_course.course.schedule == course.schedule:
-                return HttpResponse("Course schedule clashes with another registered course")
-
-        if course.prerequisites:
-            if not prerequisitesCompleted(student, course):
-                return HttpResponse("Prerequisite course is not completed")
-
-        registration = StudentsReg(student=student, course=course)
-        registration.save()
-
-        return redirect('schedule')
+        courses = Courses.objects.all()
+        return render(request, 'courses.html', {'courses': courses, 'schedule_message': schedule_message})
     else:
-        return HttpResponse("Invalid add the course")
+        schedule_message = "Invalid add the course"
+        return render(request, 'courses.html', {'schedule_message': schedule_message})
 
 def prerequisitesCompleted(student, course):
     prereq_course = course.prerequisites
@@ -163,5 +156,5 @@ def schedule(request):
         return HttpResponse("User not logged in")
 
     registered_courses = StudentsReg.objects.filter(student__student_Id=student_id, completed=False).select_related('course')
-
-    return render(request, 'schedule.html', {'registered_courses': registered_courses})
+    student_name = request.session.get('student_name')
+    return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name})

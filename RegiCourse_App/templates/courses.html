@@ -5,6 +5,20 @@
 {% endblock %}
 
 {% block content %}
+    {% if schedule_message %}
+    <div class="row justify-content-center">
+        <div class="col-md-6 scheduleMess">
+            <div class="alert scheduleMessage alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+               {{ schedule_message }}
+<button type="button" class="closeButton" data-bs-dismiss="alert" aria-label="Close">
+       <i class="bi bi-x"></i>
+</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
 <h1 class="courses">Courses</h1>
 
 <form class="d-flex searchCourse" role="search" method="GET" action="{% url 'courses' %}">
@@ -13,6 +27,8 @@
         <input class="form-control me-2 search-input search-course" type="search" placeholder="Search..." aria-label="Search" name="searchCou">
     </div>
 </form>
+
+
 
 <div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
     {% for course in courses %}
@@ -54,6 +70,10 @@
     <div class="col-md-12 noCourses">
         <p>No courses found. <a class="link" href="{% url 'courses' %}">Show all courses</a></p>
     </div>
+
+
     {% endfor %}
 </div>
+
+
 {% endblock %}

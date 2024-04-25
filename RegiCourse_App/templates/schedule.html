@@ -39,13 +39,12 @@
     {% endfor %}
 </div>
 -->
-
-<h1 style="margin-top:100px;">Registered Courses</h1>
-
+<h1 class="mySchedule">My <span>Schedule</span></h1>
+<p class="nameSch">Name: <span>{{ student_name }}</span></p>
 <div class="table-responsive mt-4">
-    <table class="table table-bordered">
+    <table class="table currentSch table-bordered">
         <thead>
-            <tr>
+            <tr class="tableHeader">
                     <th>Code</th>
                     <th>Course</th>
                     <th>Room</th>
@@ -93,10 +92,12 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="10">No registered courses found.</td>
+                <td colspan="12">No registered courses found.<a class="findCou" href="{% url 'courses' %}"> Find courses</a>
+</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 {% endblock %}
