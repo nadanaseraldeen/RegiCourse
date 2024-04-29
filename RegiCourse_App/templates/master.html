@@ -31,12 +31,38 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
             </li>
+              <!--
             <li class="nav-item">
-              <a class="nav-link" href="#notification">Notification</a>
             </li>
+            -->
+             <li class="nav-item dropdown">
+                    <a class=" dropdown notifi" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i><span class="notificationLength">{{ notifications|length }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropNoti" aria-labelledby="navbarDropdown">
+                        {% for notification in notifications %}
+                            <li>
+                                <a class="" href="#">
+                                    <strong>{{ notification.title }}</strong><br>
+                                    <span>{{ notification.content }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+              <!--
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </li>
+            -->
+               <li class="nav-item dropdown">
+                    <a class=" dropdown "  role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </a>
+              <ul class="dropdown-menu logout">
+                    <li><a class="" href="{% url 'logout' %}">Logout</a></li>
+              </ul>
+               </li>
           </ul>
          </div>
       </div>

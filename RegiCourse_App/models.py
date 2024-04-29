@@ -1,5 +1,12 @@
 from django.db import models
 
+class Notification(models.Model):
+
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title
 
 class Students(models.Model):
 
@@ -7,6 +14,7 @@ class Students(models.Model):
     student_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
+    notifications = models.ManyToManyField(Notification, blank=True)
 
     def __str__(self):
         return self.student_name
@@ -51,5 +59,4 @@ class StudentsReg(models.Model):
 
     def __str__(self):
         return f"{self.student}"
-
 

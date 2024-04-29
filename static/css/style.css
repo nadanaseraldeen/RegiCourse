@@ -21,8 +21,9 @@ height: 60px;
 
 .custom-nav .nav-link {
       color: rgba(255, 255, 255, 0.8) !important;
-    font-size: 18px;
+    font-size: 19px;
     position: relative;
+    right:60px;
     font-family: 'Times New Roman', Times, serif;
 }
 
@@ -263,7 +264,7 @@ font-size:19px;
     padding: 13px 7px;
     }
 .table-bordered {
-        border-color: #080710;;
+        border-color: #080710;
  }
 
  .findCou{
@@ -306,11 +307,118 @@ font-size:19px;
     position: absolute;
      height:0px;
      width:0px;
-     rgba(255, 255, 255, 0.9);
+     color: rgba(255, 255, 255, 0.9);
      top:-5px;
      right:30px;
      background-color: #1a1a1d;
 
 
 }
+
+.dropdown{
+
+text-decoration:none;
+position: relative;
+color: rgba(255, 255, 255, 0.8) !important;
+font-size: 22px;
+top:3px;
+
+}
+
+.notifi{
+position:relative;
+right:25px;
+}
+
+.notificationLength{
+    text-decoration: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: rgb(226, 43, 119);
+    font-size: 14px;
+    font-weight:500;
+
+}
+
+.notificationLength:hover{
+color: rgba(255, 255, 255, 0.8) !important;
+
+}
+
+.dropdown i:hover{
+    color: rgb(226, 43, 119);
+}
+
+.dropNoti{
+width: 210px;
+border:1px solid #1a1a1d;
+background-color:#080710;
+max-height: 190px;
+overflow-y: auto;
+border-radius: 4px;
+position:absolute;
+right:50px;
+padding-top:0px;
+padding-bottom:0px;
+
+
+}
+
+.logout{
+border:1px solid #1a1a1d;
+background-color:#080710;
+border-radius: 4px;
+height:40px;
+padding-top:0px;
+padding-bottom:0px;
+
+}
+
+.dropNoti li  {
+border-bottom:1px solid #1a1a1d;
+padding-left:10px;
+padding-top:5px;
+padding-bottom:4px;
+cursor:pointer;
+
+}
+
+.dropNoti li  a strong{
+font-size:13px;
+}
+
+.dropNoti li  a span{
+font-size:12px;
+}
+
+
+.logout li  {
+border-bottom:1px solid #1a1a1d;
+padding-left:15px;
+height:40px;
+cursor:pointer;
+
+}
+.logout li a{
+position:absolute;
+top: 5px;
+}
+
+.dropdown-menu li:hover{
+
+background-color: #1a1a1d;
+
+}
+
+.dropdown-menu li  a{
+color: rgba(255, 255, 255, 0.8) !important;
+text-decoration:none;
+}
+
+
+.dropdown-menu li:last-child{
+border-bottom:none;
+}
+
 

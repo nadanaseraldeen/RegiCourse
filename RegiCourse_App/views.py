@@ -1,10 +1,11 @@
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
-from RegiCourse_App.models import Students, Courses, StudentsReg
+
+from RegiCourse_App.models import Students, Courses, StudentsReg, Notification
 from django.contrib.auth import logout, authenticate
 
 
@@ -16,7 +17,8 @@ def master(request):
 
 def home(request):
     student_name = request.session.get('student_name')
-    return render(request, 'home.html', {'student_name': student_name})
+    notifications = Notification.objects.all()
+    return render(request, 'home.html', {'student_name': student_name,'notifications': notifications})
 
 
 def logout(request):
@@ -90,6 +92,8 @@ def courses_info(request):
 def courses(request):
     querySearch = request.GET.get('searchCou')
     courses = Courses.objects.all()
+    notifications = Notification.objects.all()
+
 
     if querySearch:
         courses = Courses.objects.filter(course_name__icontains=querySearch) | \
@@ -100,13 +104,14 @@ def courses(request):
         for course in courses:
            course.available_spots = course.capacity - course.studentsreg_set.count()
 
-    return render(request, 'courses.html', {'courses': courses})
+    return render(request, 'courses.html', {'courses': courses, 'notifications': notifications})
 
 
 def addToSchedule(request):
     if request.method == 'POST':
         student_id = request.session.get('student_id')
         course_code = request.POST.get('course_code')
+        notifications = Notification.objects.all()
 
         if student_id is None:
             schedule_message = "User not logged in"
@@ -114,10 +119,14 @@ def addToSchedule(request):
             student = Students.objects.get(student_Id=student_id)
             try:
                 course = Courses.objects.get(course_code=course_code)
+                available_spots = course.capacity - course.studentsreg_set.count()
+
+
                 if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
                     schedule_message = "Student is already registered for this course"
-                elif course.availableSpots() <= 0:
+                elif available_spots <= 0:
                     schedule_message = "No available spots for this course"
+
                 elif StudentsReg.objects.filter(student=student, completed=False,
                                                 course__schedule=course.schedule).exists():
                     schedule_message = "Course schedule clashes with another registered course"
@@ -131,7 +140,9 @@ def addToSchedule(request):
                 schedule_message = "Course does not exist"
 
         courses = Courses.objects.all()
-        return render(request, 'courses.html', {'courses': courses, 'schedule_message': schedule_message})
+        for course in courses:
+            course.available_spots = course.capacity - course.studentsreg_set.count()
+        return render(request, 'courses.html', {'courses': courses, 'schedule_message': schedule_message, 'notifications': notifications})
     else:
         schedule_message = "Invalid add the course"
         return render(request, 'courses.html', {'schedule_message': schedule_message})
@@ -151,10 +162,13 @@ def prerequisitesCompleted(student, course):
 
 def schedule(request):
     student_id = request.session.get('student_id')
+    notifications = Notification.objects.all()
 
     if student_id is None:
         return HttpResponse("User not logged in")
 
     registered_courses = StudentsReg.objects.filter(student__student_Id=student_id, completed=False).select_related('course')
     student_name = request.session.get('student_name')
-    return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name})
+    return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name,'notifications': notifications})
+
+

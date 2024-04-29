@@ -16,7 +16,6 @@
     {% endif %}
 
 
-
       <form class=" d-flex search" role="search" method="GET" action="{% url 'courses' %}">
         <div class="input-group">
             <button class="btn icon" type="button" id="searchButton"><i class="bi bi-search"></i></button>
@@ -26,4 +25,12 @@
 
 </div>
 </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdownButton = document.getElementById('navbarDropdown');
+            if (dropdownButton) {
+                dropdownButton.click();
+            }
+        });
+    </script>
 {% endblock %}
