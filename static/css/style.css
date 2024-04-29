@@ -101,7 +101,7 @@ height:48px;
 
 .courses{
     font-family: 'Times New Roman', Times, serif;
-    margin-top:130px;
+    margin-top:110px;
     color: rgb(226, 43, 119);
     text-align:center;
 }
@@ -405,20 +405,65 @@ position:absolute;
 top: 5px;
 }
 
-.dropdown-menu li:hover{
+.dropdown-menu-2 li:hover{
 
 background-color: #1a1a1d;
 
 }
 
-.dropdown-menu li  a{
+.dropdown-menu-2 li  a{
 color: rgba(255, 255, 255, 0.8) !important;
 text-decoration:none;
 }
 
 
-.dropdown-menu li:last-child{
+.dropdown-menu-2 li:last-child{
 border-bottom:none;
 }
 
+.coursesMenu{
+width: 190px;
+border:1px solid #1a1a1d;
+background-color:#080710;
+border-radius: 4px;
+position:absolute;
+right:89px;
+padding-top:0px;
+padding-bottom:0px;
 
+}
+
+
+.coursesMenu li  {
+padding-left:10px;
+padding-top:5px;
+padding-bottom:4px;
+cursor:pointer;
+
+}
+.coursesMenu li a{
+color: rgba(255, 255, 255, 0.8) !important;
+text-decoration:none;
+    font-family: 'Times New Roman', Times, serif;
+font-size:17px;
+
+}
+
+.coursesMenu li:hover{
+
+background-color: #1a1a1d;
+
+}
+
+.completedPer{
+    font-family: 'Times New Roman', Times, serif;
+    margin-top:110px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align:center;
+
+}
+.completedPer span{
+    color: rgb(226, 43, 119);
+
+
+}

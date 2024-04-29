@@ -1,0 +1,74 @@
+{% extends 'master.html' %}
+
+{% block title %}
+  Completed Prerequisites Page
+{% endblock %}
+
+{% block content %}
+    {% if schedule_message2 %}
+    <div class="row justify-content-center">
+        <div class="col-md-6 scheduleMess">
+            <div class="alert scheduleMessage alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+               {{ schedule_message2 }}
+<button type="button" class="closeButton" data-bs-dismiss="alert" aria-label="Close">
+       <i class="bi bi-x"></i>
+</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+<h1 class="completedPer" > Completed <span>Prerequisites</span></h1>
+
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
+    {% for completedPrere in completedPreres %}
+    <div class="col">
+        <div class="card card-back h-100">
+            {% load static %}
+            <img src="{% static 'images/logof.png' %}" class="card-img-top" alt="Course Image">
+            <div class="card-body">
+                <h5 class="card-title"><strong>{{ completedPrere.course_name }}</strong></h5>
+                <h6 class="card-subtitle mb-3">{{ completedPrere.course_code }}</h6>
+                <p class="card-text"><strong>Instructor:</strong> {{ completedPrere.instructor_name }}</p>
+                <p class="card-text"><strong>Description:</strong> {{ completedPrere.description }}</p>
+                <p class="card-text"><strong>Prerequisites:</strong> {{ completedPrere.prerequisites }}</p>
+                <p class="card-text"><strong>Available Spots:</strong> {{ completedPrere.available_spots }} / {{ completedPrere.capacity }}</p>
+            </div>
+            <div class="card-footer">
+                <small class="d-flex justify-content-start">
+                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Day:</strong> {{ completedPrere.schedule.days }}</span>
+                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Start:</strong> {{ completedPrere.schedule.startTime|time:"H:i" }}</span>
+                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>End:</strong> {{ completedPrere.schedule.endTime|time:"H:i" }}</span>
+                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Room:</strong> {{ completedPrere.schedule.roomNo }}</span>
+                </small>
+            </div>
+
+            <div class="card-footer">
+
+
+
+                <form action="{% url 'completedPreAddToSchedule' %}" method="POST">
+    {% csrf_token %}
+
+    <input type="hidden" name="course_code" value="{{ completedPrere.course_code }}">
+    <button class="addSchedule" type="submit">Add to Schedule</button>
+</form>
+
+
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-md-12 noCourses">
+        <p>No completed prerequisites courses found. <a class="link" href="{% url 'courses' %}">Show all courses</a></p>
+    </div>
+
+
+    {% endfor %}
+</div>
+
+
+{% endblock %}

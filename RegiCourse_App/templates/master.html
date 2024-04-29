@@ -25,9 +25,28 @@
                 >Home</a
               >
             </li>
+
+<!--
+
             <li class="nav-item">
               <a class="nav-link" href="{% url 'courses' %}">Courses</a>
             </li>
+
+-->
+                  <li class="nav-item ">
+                    <a class=" dropdown-toggle nav-link" href="#"  role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       Courses
+                    </a>
+                    <ul class="dropdown-menu coursesMenu" aria-labelledby="navbarDropdown">
+
+                        <li><a class="" href="{% url 'courses' %}">All Courses</a> </li>
+                        <li><a class="" href="{% url 'completedPre' %}">Completed Prerequisites</a> </li>
+
+                    </ul>
+
+
+
+
             <li class="nav-item">
               <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
             </li>
@@ -39,7 +58,7 @@
                     <a class=" dropdown notifi" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell"></i><span class="notificationLength">{{ notifications|length }}</span>
                     </a>
-                    <ul class="dropdown-menu dropNoti" aria-labelledby="navbarDropdown">
+                    <ul class=" dropdown-menu dropdown-menu-2 dropNoti" aria-labelledby="navbarDropdown">
                         {% for notification in notifications %}
                             <li>
                                 <a class="" href="#">
@@ -59,7 +78,7 @@
                     <a class=" dropdown "  role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-lines-fill"></i>
                     </a>
-              <ul class="dropdown-menu logout">
+              <ul class="dropdown-menu dropdown-menu-2 logout">
                     <li><a class="" href="{% url 'logout' %}">Logout</a></li>
               </ul>
                </li>
