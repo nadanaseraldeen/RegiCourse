@@ -4,7 +4,7 @@ from RegiCourse_App.models import *
 
 # Register your models here.
 
-admin.site.register(Courses)
+#admin.site.register(Courses)
 
 admin.site.register(CourseSchedules)
 
@@ -13,3 +13,11 @@ admin.site.register(Students)
 admin.site.register(StudentsReg)
 
 admin.site.register(Notification)
+
+class analysis(admin.ModelAdmin):
+    list_display = ('course_code', 'course_name', 'instructor_name', 'capacity', 'enrolled_students')
+
+    def enrolled_students(self, obj):
+        return StudentsReg.objects.filter(course=obj).count()
+
+admin.site.register(Courses, analysis)

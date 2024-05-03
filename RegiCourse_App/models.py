@@ -43,7 +43,7 @@ class Courses(models.Model):
     schedule = models.ForeignKey(CourseSchedules, on_delete=models.CASCADE, blank=True)
 
     def __str__(self):
-        return f"{self.course_name}"
+        return self.course_name
 
     def availableSpots(self):
         registered_count = self.studentsreg_set.count()
