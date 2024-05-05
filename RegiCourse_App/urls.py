@@ -17,6 +17,6 @@ urlpatterns = [
     path('schedule/', views.schedule, name='schedule'),
     path('addToSchedule/', views.addToSchedule, name='addToSchedule'),
     path('completedPre/', views.completedPre, name='completedPre'),
-    path('completedPreAddToSchedule/',views.completedPreAddToSchedule, name='completedPreAddToSchedule')
+    path('completedPreAddToSchedule/', views.completedPreAddToSchedule, name='completedPreAddToSchedule')
 
 ]

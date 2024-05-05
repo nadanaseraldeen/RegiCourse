@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.html import format_html
+
 
 class Notification(models.Model):
 
@@ -49,6 +51,19 @@ class Courses(models.Model):
         registered_count = self.studentsreg_set.count()
         return self.capacity - registered_count
 
+    def enrollment_number(self):
+
+        return self.studentsreg_set.count()
+
+    def enrollment_percentage(self):
+
+        if self.capacity > 0:
+            per = (self.enrollment_number() / self.capacity) * 100
+            return "{:.1f}%".format(per)
+
+        else:
+            return 0
+
 
 class StudentsReg(models.Model):
 
@@ -58,5 +73,4 @@ class StudentsReg(models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.student}"
-
+        return f"{self.studentReg_Id}"
