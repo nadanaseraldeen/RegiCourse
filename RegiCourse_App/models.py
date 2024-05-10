@@ -21,6 +21,12 @@ class Students(models.Model):
     def __str__(self):
         return self.student_name
 
+    def registered_Courses_Count(self):
+        return self.studentsreg_set.count()
+
+    def currently_courses_registered_count(self):
+        return self.studentsreg_set.filter(completed=False).count()
+
 
 class CourseSchedules(models.Model):
 
