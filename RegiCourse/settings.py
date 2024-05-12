@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+LOGIN_URL = 'login/'
 LOGIN_REDIRECT_URL = 'home'
 
 
@@ -91,9 +91,13 @@ WSGI_APPLICATION = 'RegiCourse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'regicourse',
+        'NAME': 'regicourse2',
         'USER': 'root',
         'PASSWORD': '2342002Nada',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET collation_connection = utf8mb4_unicode_ci;",
+        },
     }
 }
 

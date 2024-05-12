@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.html import format_html
 
@@ -15,7 +16,8 @@ class Students(models.Model):
     student_Id = models.AutoField(primary_key=True)
     student_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     notifications = models.ManyToManyField(Notification, blank=True)
 
     def __str__(self):
@@ -75,8 +77,9 @@ class StudentsReg(models.Model):
 
     studentReg_Id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, to_field='course_code', on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"{self.studentReg_Id}"

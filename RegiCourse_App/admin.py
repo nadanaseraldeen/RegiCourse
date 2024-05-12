@@ -42,6 +42,6 @@ admin.site.register(StudentsReg, StudentRegi)
 
 
 class studentAnalysis(admin.ModelAdmin):
-    list_display = ('student_name', 'email', 'registered_Courses_Count', 'currently_courses_registered_count')
+    list_display = ('student_name', 'registered_Courses_Count', 'currently_courses_registered_count')
 
 admin.site.register(Students, studentAnalysis)

@@ -1,9 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 
 from RegiCourse_App.models import Students, Courses, StudentsReg, Notification
 
@@ -13,15 +16,18 @@ def master(request):
     return render(request,'master.html')
 
 
-
+@login_required
 def home(request):
-    student_name = request.session.get('student_name')
+    user_id = request.session.get('user_id')
+    student = Students.objects.get(user=request.user)
     notifications = Notification.objects.all()
-    return render(request, 'home.html', {'student_name': student_name,'notifications': notifications})
+    return render(request, 'home.html', {'student_name': student, 'notifications': notifications})
 
 
-def logout(request):
-    request.session.clear()
+def user_logout(request):
+
+    if request.user:
+       logout(request)
     return redirect('login')
 
 
@@ -42,22 +48,20 @@ def signup(request):
             messages.error(request, 'Passwords do not match')
             return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
 
-        if Students.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             messages.error(request, 'Email is already in use')
             return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
 
-        hashed_password = make_password(password)
-        student = Students(student_name=name, email=email, password=hashed_password)
-        student.save()
+        user = User.objects.create(username=email, email=email)
+        user.set_password(password)
+        user.save()
+        student = Students.objects.create(student_name=name, email=email, user=user)
 
-        request.session['student_id'] = student.student_Id
-
-        request.session['student_name'] = student.student_name
-        return redirect('home')
+        return redirect('login')
     return render(request, 'login.html')
 
 
-def login(request):
+def loginn(request):
     return render(request, 'login.html')
 
 
@@ -65,29 +69,21 @@ def authenticate_user(request):
     if request.method == 'POST':
         email = request.POST.get('login-email')
         password = request.POST.get('login-password')
+        user = authenticate(request, username=email, password=password)
 
-        try:
-            student = Students.objects.get(email=email)
-
-            if check_password(password, student.password):
-                request.session['student_id'] = student.student_Id
-                request.session['student_name'] = student.student_name
-                return redirect('home')
-                #return redirect('home')
-            else:
-                messages.error(request, 'Invalid email or password')
-                return render(request, 'login.html', {'login_errors': messages.get_messages(request)})
-        except Students.DoesNotExist:
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
             messages.error(request, 'Invalid email or password')
-            return render(request, 'login.html', {'login_errors': messages.get_messages(request)})
-    else:
-        return render(request, 'login.html')
+        return render(request, 'login.html', {'login_errors': messages.get_messages(request)})
 
+    return render(request, 'login.html')
 
 def courses_info(request):
     return render(request, 'courses.html')
 
-
+@login_required
 def courses(request):
     querySearch = request.GET.get('searchCou')
     courses = Courses.objects.all()
@@ -108,24 +104,22 @@ def courses(request):
 
 def addToSchedule(request):
     if request.method == 'POST':
-        student_id = request.session.get('student_id')
         course_code = request.POST.get('course_code')
         notifications = Notification.objects.all()
 
-        if student_id is None:
+        if not request.user.is_authenticated:
             schedule_message = "User not logged in"
         else:
-            student = Students.objects.get(student_Id=student_id)
             try:
                 course = Courses.objects.get(course_code=course_code)
-                available_spots = course.capacity - course.studentsreg_set.count()
+                student = request.user.students
 
+                available_spots = course.capacity - course.studentsreg_set.count()
 
                 if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
                     schedule_message = "Student is already registered for this course"
                 elif available_spots <= 0:
                     schedule_message = "No available spots for this course"
-
                 elif StudentsReg.objects.filter(student=student, completed=False,
                                                 course__schedule=course.schedule).exists():
                     schedule_message = "Course schedule clashes with another registered course"
@@ -141,12 +135,21 @@ def addToSchedule(request):
         courses = Courses.objects.all()
         for course in courses:
             course.available_spots = course.capacity - course.studentsreg_set.count()
-        return render(request, 'courses.html', {'courses': courses, 'schedule_message': schedule_message, 'notifications': notifications})
+        return render(request, 'courses.html',
+                      {'courses': courses, 'schedule_message': schedule_message, 'notifications': notifications})
     else:
         schedule_message = "Invalid add the course"
         return render(request, 'courses.html', {'schedule_message': schedule_message})
 
+
 def prerequisitesCompleted(student, course):
+    """
+    if course.prerequisites:
+        prereq_registration = StudentsReg.objects.filter(student=student, course=course.prerequisites).first()
+        return prereq_registration and prereq_registration.completed
+    else:
+        return True
+    """
     prereq_course = course.prerequisites
 
     prereq_registration = StudentsReg.objects.filter(student=student, course=prereq_course).first()
@@ -159,87 +162,78 @@ def prerequisitesCompleted(student, course):
      #prereq_course = course.prerequisites
      #return StudentsReg.objects.filter(student=student, course=prereq_course).exists()
 
-def schedule(request):
-    student_id = request.session.get('student_id')
-    notifications = Notification.objects.all()
 
-    if student_id is None:
+@login_required
+def schedule(request):
+    if not request.user.is_authenticated:
         return HttpResponse("User not logged in")
 
-    registered_courses = StudentsReg.objects.filter(student__student_Id=student_id, completed=False).select_related('course')
-    student_name = request.session.get('student_name')
-    return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name,'notifications': notifications})
+    student = request.user.students
+    registered_courses = StudentsReg.objects.filter(student=student, completed=False).select_related('course')
+    student_name = student.student_name if student else None
+    notifications = Notification.objects.all()
 
-
+    return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name, 'notifications': notifications})
+@login_required
 def completedPre(request):
-    student_id = request.session.get('student_id')
+    if not request.user.is_authenticated:
+        return HttpResponse("User not logged in")
 
-    if not student_id:
-        return redirect('login')
+    try:
+        student = request.user.students
+    except Students.DoesNotExist:
+        return HttpResponse("Student not found for this user")
 
     notifications = Notification.objects.all()
-    try:
-        student = Students.objects.get(student_Id=student_id)
-    except Students.DoesNotExist:
-        return redirect('login')
 
-    completedPreres = Courses.objects.filter(prerequisites__studentsreg__student=student,
-                                             prerequisites__studentsreg__completed=True) | \
-                      Courses.objects.filter(prerequisites__isnull=True)
+    completedPreres = Courses.objects.filter(prerequisites__studentsreg__student=student, prerequisites__studentsreg__completed=True) | Courses.objects.filter(prerequisites__isnull=True)
 
     for completedPrere in completedPreres:
-            completedPrere.available_spots = completedPrere.capacity - completedPrere.studentsreg_set.count()
-    return render(request,'completedPrerequisites.html', {'completedPreres':completedPreres,'notifications':notifications})
+        completedPrere.available_spots = completedPrere.capacity - completedPrere.studentsreg_set.count()
 
+    return render(request, 'completedPrerequisites.html', {'completedPreres': completedPreres,'notifications': notifications})
 
 def completedPreAddToSchedule(request):
     if request.method == 'POST':
-        student_id = request.session.get('student_id')
         course_code = request.POST.get('course_code')
         notifications = Notification.objects.all()
 
-        if student_id is None:
+        if not request.user.is_authenticated:
             schedule_message2 = "User not logged in"
         else:
-            student = Students.objects.get(student_Id=student_id)
             try:
                 course = Courses.objects.get(course_code=course_code)
-                available_spots = course.capacity - course.studentsreg_set.count()
+                student = request.user.students
 
+                available_spots = course.capacity - course.studentsreg_set.count()
 
                 if StudentsReg.objects.filter(student=student, course__course_code=course.course_code).exists():
                     schedule_message2 = "Student is already registered for this course"
                 elif available_spots <= 0:
                     schedule_message2 = "No available spots for this course"
-
                 elif StudentsReg.objects.filter(student=student, completed=False,
                                                 course__schedule=course.schedule).exists():
                     schedule_message2 = "Course schedule clashes with another registered course"
-
                 else:
                     registration = StudentsReg(student=student, course=course)
                     registration.save()
                     return redirect('schedule')
+
+                completedPreres = Courses.objects.filter(prerequisites__studentsreg__student=student, prerequisites__studentsreg__completed=True) | Courses.objects.filter(prerequisites__isnull=True)
+
+                for completedPrere in completedPreres:
+                    completedPrere.available_spots = completedPrere.capacity - completedPrere.studentsreg_set.count()
+
+                return render(request, 'completedPrerequisites.html', {
+                    'completedPreres': completedPreres,
+                    'schedule_message2': schedule_message2,
+                    'notifications': notifications
+                })
+
             except Courses.DoesNotExist:
-                schedule_message2 = "Course does not exist"
+                schedule_message2 = "Course not found"
 
-        completedPreres = Courses.objects.filter(prerequisites__studentsreg__student=student, prerequisites__studentsreg__completed=True) | \
-                          Courses.objects.filter(prerequisites__isnull=True)
-
-        #    Q(prerequisites__studentsreg__student=student, prerequisites__studentsreg__completed=True) |
-         #   Q(prerequisites__isnull=True)
-       # ).distinct()
-
-
-
-        for completedPrere in completedPreres:
-            completedPrere.available_spots = completedPrere.capacity - completedPrere.studentsreg_set.count()
-
-        return render(request, 'completedPrerequisites.html', {
-            'completedPreres': completedPreres,
-            'schedule_message2': schedule_message2,
-            'notifications': notifications
-        })
     else:
-        schedule_message2 = "Invalid add the course"
-        return render(request, 'completedPrerequisites.html', {'schedule_message2': schedule_message2})
+        schedule_message2 = "Invalid request to add the course"
+
+    return render(request, 'completedPrerequisites.html', {'schedule_message2': schedule_message2})

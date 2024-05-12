@@ -8,9 +8,9 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('master/', views.master),
     path('home/', views.home, name='home'),
-    path('logout/', views.logout, name='logout'),
-    path('signup-login/', views.signup, name='signup'),
-    path('', views.login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('signup/', views.signup, name='signup'),
+    path('', views.loginn, name='login'),
     path('authenticate/', views.authenticate_user, name='authenticate'),
     path('courses_info/', views.courses_info, name='courses_info'),
     path('courses/', views.courses, name='courses'),
