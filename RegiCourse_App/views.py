@@ -1,13 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
-
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-
 from RegiCourse_App.models import Students, Courses, StudentsReg, Notification
 
 
@@ -52,12 +50,19 @@ def signup(request):
             messages.error(request, 'Email is already in use')
             return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
 
-        user = User.objects.create(username=email, email=email)
-        user.set_password(password)
+
+        #hashed_password = make_password(password)
+
+        user = User.objects.create_user(username=email, email=email, password= password)
         user.save()
+
+        student_group = Group.objects.get(name='student')
+        student_group.user_set.add(user)
+
         student = Students.objects.create(student_name=name, email=email, user=user)
 
         return redirect('login')
+
     return render(request, 'login.html')
 
 
@@ -158,6 +163,7 @@ def prerequisitesCompleted(student, course):
         return False
 
     return True
+
 
      #prereq_course = course.prerequisites
      #return StudentsReg.objects.filter(student=student, course=prereq_course).exists()
