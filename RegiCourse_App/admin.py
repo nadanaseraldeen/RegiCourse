@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
 from RegiCourse_App.models import *
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
 
 # Register your models here.
 
@@ -45,3 +47,16 @@ class studentAnalysis(admin.ModelAdmin):
     list_display = ('student_name', 'registered_Courses_Count', 'currently_courses_registered_count')
 
 admin.site.register(Students, studentAnalysis)
+
+
+
+class UserAdmin(BaseUserAdmin):
+    list_display = ('username','get_groups','is_staff')
+
+    def get_groups(self, obj):
+        return ", ".join([group.name for group in obj.groups.all()])
+
+    get_groups.short_description = 'Groups'
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
