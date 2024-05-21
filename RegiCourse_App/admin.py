@@ -1,10 +1,15 @@
 from django.contrib import admin
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import path
 from django.utils.safestring import mark_safe
 
 from RegiCourse_App.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .views import course_report  # Import the course_report view
+
+
+from django.utils.safestring import mark_safe
 
 
 # Register your models here.
@@ -30,8 +35,28 @@ class analysis(admin.ModelAdmin):
 admin.site.register(Courses, analysis)
 """
 
+"""
 class CoursesAnalysis(admin.ModelAdmin):
     list_display = ('course_code', 'course_name', 'instructor_name', 'capacity', 'enrollment_number', 'enrollment_percentage' )
+
+admin.site.register(Courses, CoursesAnalysis)
+"""
+
+class CoursesAnalysis(admin.ModelAdmin):
+    list_display = ('course_code', 'course_name')
+    change_list_template = "admin/course_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('course_report/', self.admin_site.admin_view(course_report), name='course-report'),
+        ]
+        return custom_urls + urls
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['course_report_url'] = 'course-report'
+        return super(CoursesAnalysis, self).changelist_view(request, extra_context=extra_context)
 
 admin.site.register(Courses, CoursesAnalysis)
 
@@ -49,7 +74,6 @@ class studentAnalysis(admin.ModelAdmin):
 admin.site.register(Students, studentAnalysis)
 
 
-
 class UserAdmin(BaseUserAdmin):
     list_display = ('username','get_groups','is_staff')
 
@@ -60,3 +84,6 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+
+

@@ -1,5 +1,9 @@
-from django.contrib.auth.decorators import login_required
+import csv
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import make_password, check_password
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -113,9 +117,10 @@ def addToSchedule(request):
         notifications = Notification.objects.all()
 
         if not request.user.is_authenticated:
-            schedule_message = "User not logged in"
+            return redirect('login')
+
         else:
-            try:
+
                 course = Courses.objects.get(course_code=course_code)
                 student = request.user.students
 
@@ -134,8 +139,6 @@ def addToSchedule(request):
                     registration = StudentsReg(student=student, course=course)
                     registration.save()
                     return redirect('schedule')
-            except Courses.DoesNotExist:
-                schedule_message = "Course does not exist"
 
         courses = Courses.objects.all()
         for course in courses:
@@ -172,7 +175,7 @@ def prerequisitesCompleted(student, course):
 @login_required
 def schedule(request):
     if not request.user.is_authenticated:
-        return HttpResponse("User not logged in")
+        return redirect('login')
 
     student = request.user.students
     registered_courses = StudentsReg.objects.filter(student=student, completed=False).select_related('course')
@@ -183,12 +186,12 @@ def schedule(request):
 @login_required
 def completedPre(request):
     if not request.user.is_authenticated:
-        return HttpResponse("User not logged in")
+        return redirect('login')
 
     try:
         student = request.user.students
     except Students.DoesNotExist:
-        return HttpResponse("Student not found for this user")
+        return redirect('login')
 
     notifications = Notification.objects.all()
 
@@ -205,7 +208,7 @@ def completedPreAddToSchedule(request):
         notifications = Notification.objects.all()
 
         if not request.user.is_authenticated:
-            schedule_message2 = "User not logged in"
+            return redirect('login')
         else:
             try:
                 course = Courses.objects.get(course_code=course_code)
@@ -243,3 +246,16 @@ def completedPreAddToSchedule(request):
         schedule_message2 = "Invalid request to add the course"
 
     return render(request, 'completedPrerequisites.html', {'schedule_message2': schedule_message2})
+
+def user_in_group(user):
+    return user.groups.filter(name='admin').exists()
+
+
+@user_passes_test(user_in_group)
+def course_report(request):
+    courses = Courses.objects.annotate(enrollment_count=Count('studentsreg'))
+
+    context = {
+        'courses': courses,
+    }
+    return render(request, 'admin/course_report.html', context)

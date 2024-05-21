@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from RegiCourse_App.views import course_report
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('RegiCourse_App.urls')),

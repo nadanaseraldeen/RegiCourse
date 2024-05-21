@@ -1,0 +1,32 @@
+<!-- templates/admin/course_report.html -->
+{% extends "admin/base_site.html" %}
+
+{% block title %}Course Report{% endblock %}
+
+{% block content %}
+<h1>Course Report</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Instructor Name</th>
+            <th>Capacity</th>
+            <th>Enrollment Number</th>
+            <th>Enrollment Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.course_code }}</td>
+            <td>{{ course.course_name }}</td>
+            <td>{{ course.instructor_name }}</td>
+            <td>{{ course.capacity }}</td>
+            <td>{{ course.enrollment_number }}</td>
+            <td>{{ course.enrollment_percentage }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

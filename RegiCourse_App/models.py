@@ -18,7 +18,6 @@ class Students(models.Model):
     email = models.EmailField(unique=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    notifications = models.ManyToManyField(Notification, blank=True)
 
     def __str__(self):
         return self.student_name
