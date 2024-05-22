@@ -1,10 +1,8 @@
 from xml.etree.ElementInclude import include
-
 from django.urls import path
 from RegiCourse_App import views
 from django.contrib.auth import views as auth_views, admin
 from .views import course_report
-
 
 
 urlpatterns = [
@@ -20,7 +18,6 @@ urlpatterns = [
     path('addToSchedule/', views.addToSchedule, name='addToSchedule'),
     path('completedPre/', views.completedPre, name='completedPre'),
     path('completedPreAddToSchedule/', views.completedPreAddToSchedule, name='completedPreAddToSchedule'),
-
     path('admin/course_report/', course_report, name='course_report'),
 
 ]

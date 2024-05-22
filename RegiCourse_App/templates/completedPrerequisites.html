@@ -4,6 +4,7 @@
   Completed Prerequisites Page
 {% endblock %}
 
+
 {% block content %}
     {% if schedule_message2 %}
     <div class="row justify-content-center">
@@ -18,11 +19,7 @@
         </div>
     </div>
     {% endif %}
-
 <h1 class="completedPer" > Completed <span>Prerequisites</span></h1>
-
-
-
 <div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
     {% for completedPrere in completedPreres %}
     <div class="col">
@@ -45,19 +42,12 @@
                         <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Room:</strong> {{ completedPrere.schedule.roomNo }}</span>
                 </small>
             </div>
-
             <div class="card-footer">
-
-
-
                 <form action="{% url 'completedPreAddToSchedule' %}" method="POST">
     {% csrf_token %}
-
     <input type="hidden" name="course_code" value="{{ completedPrere.course_code }}">
     <button class="addSchedule" type="submit">Add to Schedule</button>
 </form>
-
-
             </div>
         </div>
     </div>
@@ -65,10 +55,6 @@
     <div class="col-md-12 noCourses">
         <p>No completed prerequisites courses found. <a class="link" href="{% url 'courses' %}">Show all courses</a></p>
     </div>
-
-
     {% endfor %}
 </div>
-
-
 {% endblock %}

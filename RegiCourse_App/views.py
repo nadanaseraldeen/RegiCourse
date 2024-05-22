@@ -1,5 +1,3 @@
-import csv
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import make_password, check_password
@@ -14,7 +12,6 @@ from RegiCourse_App.models import Students, Courses, StudentsReg, Notification
 
 
 def master(request):
-
     return render(request,'master.html')
 
 
@@ -27,7 +24,6 @@ def home(request):
 
 
 def user_logout(request):
-
     if request.user:
        logout(request)
     return redirect('login')
@@ -49,11 +45,9 @@ def signup(request):
         if password != confirmPassword:
             messages.error(request, 'Passwords do not match')
             return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
-
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email is already in use')
             return render(request, 'login.html', {'signup_errors': messages.get_messages(request)})
-
 
         #hashed_password = make_password(password)
 
@@ -74,6 +68,10 @@ def loginn(request):
     return render(request, 'login.html')
 
 
+def user_in_group2(user):
+    return user.groups.filter(name='student').exists()
+
+
 def authenticate_user(request):
     if request.method == 'POST':
         email = request.POST.get('login-email')
@@ -89,15 +87,16 @@ def authenticate_user(request):
 
     return render(request, 'login.html')
 
+
 def courses_info(request):
     return render(request, 'courses.html')
+
 
 @login_required
 def courses(request):
     querySearch = request.GET.get('searchCou')
     courses = Courses.objects.all()
     notifications = Notification.objects.all()
-
 
     if querySearch:
         courses = Courses.objects.filter(course_name__icontains=querySearch) | \
@@ -111,6 +110,7 @@ def courses(request):
     return render(request, 'courses.html', {'courses': courses, 'notifications': notifications})
 
 
+@user_passes_test(user_in_group2)
 def addToSchedule(request):
     if request.method == 'POST':
         course_code = request.POST.get('course_code')
@@ -130,8 +130,7 @@ def addToSchedule(request):
                     schedule_message = "Student is already registered for this course"
                 elif available_spots <= 0:
                     schedule_message = "No available spots for this course"
-                elif StudentsReg.objects.filter(student=student, completed=False,
-                                                course__schedule=course.schedule).exists():
+                elif StudentsReg.objects.filter(student=student, completed=False,course__schedule=course.schedule).exists():
                     schedule_message = "Course schedule clashes with another registered course"
                 elif course.prerequisites and not prerequisitesCompleted(student, course):
                     schedule_message = "Prerequisite course is not completed"
@@ -143,23 +142,14 @@ def addToSchedule(request):
         courses = Courses.objects.all()
         for course in courses:
             course.available_spots = course.capacity - course.studentsreg_set.count()
-        return render(request, 'courses.html',
-                      {'courses': courses, 'schedule_message': schedule_message, 'notifications': notifications})
+        return render(request, 'courses.html',{'courses': courses, 'schedule_message': schedule_message, 'notifications': notifications})
     else:
         schedule_message = "Invalid add the course"
         return render(request, 'courses.html', {'schedule_message': schedule_message})
 
 
 def prerequisitesCompleted(student, course):
-    """
-    if course.prerequisites:
-        prereq_registration = StudentsReg.objects.filter(student=student, course=course.prerequisites).first()
-        return prereq_registration and prereq_registration.completed
-    else:
-        return True
-    """
     prereq_course = course.prerequisites
-
     prereq_registration = StudentsReg.objects.filter(student=student, course=prereq_course).first()
 
     if not prereq_registration or not prereq_registration.completed:
@@ -168,10 +158,7 @@ def prerequisitesCompleted(student, course):
     return True
 
 
-     #prereq_course = course.prerequisites
-     #return StudentsReg.objects.filter(student=student, course=prereq_course).exists()
-
-
+@user_passes_test(user_in_group2)
 @login_required
 def schedule(request):
     if not request.user.is_authenticated:
@@ -183,6 +170,9 @@ def schedule(request):
     notifications = Notification.objects.all()
 
     return render(request, 'schedule.html', {'registered_courses': registered_courses, 'student_name': student_name, 'notifications': notifications})
+
+
+@user_passes_test(user_in_group2)
 @login_required
 def completedPre(request):
     if not request.user.is_authenticated:
@@ -202,6 +192,9 @@ def completedPre(request):
 
     return render(request, 'completedPrerequisites.html', {'completedPreres': completedPreres,'notifications': notifications})
 
+
+@user_passes_test(user_in_group2)
+@login_required
 def completedPreAddToSchedule(request):
     if request.method == 'POST':
         course_code = request.POST.get('course_code')
@@ -247,15 +240,13 @@ def completedPreAddToSchedule(request):
 
     return render(request, 'completedPrerequisites.html', {'schedule_message2': schedule_message2})
 
+
 def user_in_group(user):
     return user.groups.filter(name='admin').exists()
 
 
 @user_passes_test(user_in_group)
 def course_report(request):
-    courses = Courses.objects.annotate(enrollment_count=Count('studentsreg'))
+    courses = Courses.objects.all()
 
-    context = {
-        'courses': courses,
-    }
-    return render(request, 'admin/course_report.html', context)
+    return render(request, 'admin/course_report.html', {'courses': courses})

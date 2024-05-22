@@ -5,40 +5,7 @@
 {% endblock %}
 
 {% block content%}
-<!--
-<h1 style="margin-top:100px;">Registered Courses</h1>
 
-<div class="row row-cols-1 row-cols-md-3 g-4 mt-4 mb-5">
-    {% for registration in registered_courses %}
-    <div class="col">
-        <div class="card card-back h-100">
-            {% load static %}
-            <img src="{% static 'images/logof.png' %}" class="card-img-top" alt="Course Image">
-            <div class="card-body">
-                <h5 class="card-title"><strong>{{ registration.course.course_name }}</strong></h5>
-                <h6 class="card-subtitle mb-3">{{ registration.course.course_code }}</h6>
-                <p class="card-text"><strong>Instructor:</strong> {{ registration.course.instructor_name }}</p>
-                <p class="card-text"><strong>Description:</strong> {{ registration.course.description }}</p>
-                <p class="card-text"><strong>Prerequisites:</strong> {{ registration.course.prerequisites }}</p>
-                <p class="card-text"><strong>Available Spots:</strong> {{ registration.course.availableSpots }} / {{ registration.course.capacity }}</p>
-            </div>
-            <div class="card-footer">
-                <small class="d-flex justify-content-start">
-                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Day:</strong> {{ registration.course.schedule.days }}</span>
-                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Start:</strong> {{ registration.course.schedule.startTime|time:"H:i" }}</span>
-                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>End:</strong> {{ registration.course.schedule.endTime|time:"H:i" }}</span>
-                        <span style="margin-right: 15px; font-size: 12px;color: rgba(255, 255, 255, 0.6);"><strong>Room:</strong> {{ registration.course.schedule.roomNo }}</span>
-                </small>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-md-12 noCourses">
-        <p>No registered courses found.</p>
-    </div>
-    {% endfor %}
-</div>
--->
 <h1 class="mySchedule">My <span>Schedule</span></h1>
 <p class="nameSch">Name: <span>{{ student_name }}</span></p>
 <div class="table-responsive mt-4">

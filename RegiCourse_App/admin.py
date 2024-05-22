@@ -1,48 +1,21 @@
 from django.contrib import admin
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
 from django.urls import path
-from django.utils.safestring import mark_safe
-
 from RegiCourse_App.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .views import course_report  # Import the course_report view
-
-
-from django.utils.safestring import mark_safe
-
-
-# Register your models here.
-
-#admin.site.register(Courses)
+from .views import course_report
 
 admin.site.register(CourseSchedules)
-
-
-#admin.site.register(StudentsReg)
-#admin.site.register(Students)
-
-
 admin.site.register(Notification)
 
-"""
-class analysis(admin.ModelAdmin):
-    list_display = ('course_code', 'course_name', 'instructor_name', 'capacity', 'enrolled_students')
 
-    def enrolled_students(self, obj):
-        return StudentsReg.objects.filter(course=obj).count()
+class StudentRegi(admin.ModelAdmin):
+    list_display = ('student', 'course', 'completed')
 
-admin.site.register(Courses, analysis)
-"""
 
-"""
-class CoursesAnalysis(admin.ModelAdmin):
-    list_display = ('course_code', 'course_name', 'instructor_name', 'capacity', 'enrollment_number', 'enrollment_percentage' )
+admin.site.register(StudentsReg, StudentRegi)
 
-admin.site.register(Courses, CoursesAnalysis)
-"""
 
-class CoursesAnalysis(admin.ModelAdmin):
+class coursesReport(admin.ModelAdmin):
     list_display = ('course_code', 'course_name')
     change_list_template = "admin/course_changelist.html"
 
@@ -56,20 +29,22 @@ class CoursesAnalysis(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['course_report_url'] = 'course-report'
-        return super(CoursesAnalysis, self).changelist_view(request, extra_context=extra_context)
-
-admin.site.register(Courses, CoursesAnalysis)
+        return super(coursesReport, self).changelist_view(request, extra_context=extra_context)
 
 
-class StudentRegi(admin.ModelAdmin):
-    list_display = ('student', 'course', 'completed')
+admin.site.register(Courses, coursesReport)
 
+"""
+class coursesReport(admin.ModelAdmin):
+    list_display = ('course_code', 'course_name', 'instructor_name', 'capacity', 'enrollment_number', 'enrollment_percentage' )
 
-admin.site.register(StudentsReg, StudentRegi)
+admin.site.register(Courses, coursesReport)
+"""
 
 
 class studentAnalysis(admin.ModelAdmin):
     list_display = ('student_name', 'registered_Courses_Count', 'currently_courses_registered_count')
+
 
 admin.site.register(Students, studentAnalysis)
 
@@ -81,6 +56,7 @@ class UserAdmin(BaseUserAdmin):
         return ", ".join([group.name for group in obj.groups.all()])
 
     get_groups.short_description = 'Groups'
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
