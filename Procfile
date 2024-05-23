@@ -1,1 +1,1 @@
-web gunicorn RegiCourse: --log-file -
+web gunicorn RegiCourse.wsgi:application --log-file -
