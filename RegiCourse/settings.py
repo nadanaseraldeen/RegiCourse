@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'RegiCourse.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-""""
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -108,26 +108,20 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'regicourse2',  # Replace 'your_database_name' with your actual database name
-        'USER': 'root',  # Replace 'your_database_user' with your actual database user
-        'PASSWORD': '2342002Nada',  # Replace 'your_database_password' with your actual database password
-        'HOST': 'localhost',  # Replace 'your_database_host' with your actual database host
-        'PORT': '3306',  # Replace '3306' with your actual database port (default is 3306)
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'NAME': 'regicourse2',
+        'PASSWORD': '2342002Nada',
+        'PORT': '3306',
     }
 }
 
-# Other necessary settings
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+django_heroku.settings(locals())
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -169,8 +163,3 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import django_heroku
-
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-django_heroku.settings(locals())
