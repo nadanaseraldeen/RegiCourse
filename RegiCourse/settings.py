@@ -108,9 +108,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'regicourse2',
-        'PASSWORD': '2342002Nada',
-        'PORT': '3306',
+        'NAME': 'heroku_788f7a59b552402',  # Database name
+        'USER': 'bdfa53f7d16be4',          # Username
+        'PASSWORD': '11029bcf',           # Password
+        'HOST': 'us-cluster-east-01.k8s.cleardb.net',  # Hostname
+        'PORT': '3306',                    # Default MySQL port
     }
 }
 
