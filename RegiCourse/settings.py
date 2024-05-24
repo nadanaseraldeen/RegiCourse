@@ -121,9 +121,17 @@ DATABASES = {
     }
 }
 
-# Update the DATABASE_URL using dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# Apply dj_database_url to update the default database settings
+db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
+
+# Other necessary settings
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 
 # Password validation
