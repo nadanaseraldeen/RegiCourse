@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
-
+import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +29,7 @@ SECRET_KEY = 'django-insecure--ks22%$*qh5u%_avsy9pn*k)i46r8$%3dsd7^h-+b*oz#k2+u_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
@@ -55,6 +56,8 @@ SESSION_COOKIE_HTTPONLY = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,7 +90,7 @@ WSGI_APPLICATION = 'RegiCourse.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+""""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -101,6 +104,14 @@ DATABASES = {
     }
 }
 
+"""
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('CLEARDB_DATABASE_URL')
+    )
+}
+
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -147,6 +158,6 @@ import django_heroku
 import dj_database_url
 
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 django_heroku.settings(locals())
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['regicourse.herokuapp.com', 'localhost']
