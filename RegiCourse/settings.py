@@ -105,25 +105,19 @@ DATABASES = {
 }
 
 """
-import dj_database_url
-import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST'),
-        'PORT': os.getenv('DATABASE_PORT', '3306'),
+        'NAME': 'regicourse2',  # Replace 'your_database_name' with your actual database name
+        'USER': 'root',  # Replace 'your_database_user' with your actual database user
+        'PASSWORD': '2342002Nada',  # Replace 'your_database_password' with your actual database password
+        'HOST': 'localhost',  # Replace 'your_database_host' with your actual database host
+        'PORT': '3306',  # Replace '3306' with your actual database port (default is 3306)
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
-
-# Apply dj_database_url to update the default database settings
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
 # Other necessary settings
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -132,7 +126,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
 
 
 # Password validation
