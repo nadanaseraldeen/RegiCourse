@@ -106,12 +106,10 @@ DATABASES = {
 
 """
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('CLEARDB_DATABASE_URL')
-    )
+    'default': dj_database_url.config(default=os.getenv('mysql://b7016690794ddf:1950ded8@us-cluster-east-01.k8s.cleardb.net/heroku_0183c9ddb414f45?reconnect=true'))
 }
 
-"""
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -160,4 +158,3 @@ import dj_database_url
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 django_heroku.settings(locals())
-ALLOWED_HOSTS = ['regicourse.herokuapp.com', 'localhost']
