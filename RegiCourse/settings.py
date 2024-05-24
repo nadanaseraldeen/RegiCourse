@@ -105,10 +105,25 @@ DATABASES = {
 }
 
 """
+import dj_database_url
+import os
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('mysql://b7016690794ddf:1950ded8@us-cluster-east-01.k8s.cleardb.net/heroku_0183c9ddb414f45?reconnect=true'))
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('regicourse'),
+        'USER': os.getenv('Nada'),
+        'PASSWORD': os.getenv('2342002Nada'),
+        'HOST': os.getenv('Nada'),
+        'PORT': os.getenv('3306', '3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
 }
 
+# Update the DATABASE_URL using dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 
 
 # Password validation
@@ -153,7 +168,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import django_heroku
-import dj_database_url
 
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
