@@ -36,7 +36,7 @@
         </p>
     </form>
 
-<form id="signupForm" class="signupForm" method="post" action="{% url 'signup' %}">
+    <form id="signupForm" class="signupForm" method="post" action="{% url 'signup' %}">
         {% csrf_token %}
 
         <input type="text" placeholder="Name" name="name" required/>

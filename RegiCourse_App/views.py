@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Count
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
@@ -18,7 +18,7 @@ def master(request):
 @login_required
 def home(request):
     user_id = request.session.get('user_id')
-    student = Students.objects.get(user=request.user)
+    student = get_object_or_404(Students, user=request.user)
     notifications = Notification.objects.all()
     return render(request, 'home.html', {'student_name': student, 'notifications': notifications})
 
