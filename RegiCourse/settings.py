@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'RegiCourse.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -104,9 +104,9 @@ DATABASES = {
     }
 }
 
-"""
 
-""""
+
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -119,13 +119,26 @@ DATABASES = {
 }
 """
 
+# Use the Heroku database configuration by default
 DATABASES = {
-    'default': dj_database_url.parse(
-        'mysql://bdfa53f7d16be4:11029bcf@us-cluster-east-01.k8s.cleardb.net/heroku_788f7a59b552402?reconnect=true',
-        conn_max_age=600,
-        ssl_require=True
-    )
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    #    'default': dj_database_url.config(default='your_cleardb_database_url')
+
 }
+"""
+# Add this block if you want to run migrations locally against your MySQL database
+if 'DATABASE_URL' not in os.environ:
+    DATABASES['default'] = {
+         'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'heroku_788f7a59b552402',
+        'USER': 'bdfa53f7d16be4',
+        'PASSWORD': '11029bcf',
+        'HOST': 'us-cluster-east-01.k8s.cleardb.net',
+        'PORT': '3306',
+
+    }
+    
+    """
 
 db_from_env = dj_database_url.config(conn_max_age=600)
 db_from_env['OPTIONS'] = {}
@@ -176,4 +189,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Activate Django-Heroku.
+django_heroku.settings(locals())
 
