@@ -105,6 +105,8 @@ DATABASES = {
 }
 
 """
+
+""""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -114,6 +116,15 @@ DATABASES = {
         'HOST': 'us-cluster-east-01.k8s.cleardb.net',
         'PORT': '3306',
     }
+}
+"""
+
+DATABASES = {
+    'default': dj_database_url.parse(
+        'mysql://bdfa53f7d16be4:11029bcf@us-cluster-east-01.k8s.cleardb.net/heroku_788f7a59b552402?reconnect=true',
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 db_from_env = dj_database_url.config(conn_max_age=600)
